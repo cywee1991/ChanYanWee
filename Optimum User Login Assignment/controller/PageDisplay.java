@@ -64,6 +64,9 @@ public class PageDisplay {
 	public void enterSecurityQuestion(User user) {
 		this.refUser = user;
 		System.out.println("Enter Security Question choice");
+		System.out.println("A: What is your favourite colour ?" );
+		System.out.println("B: What is your childhood superhero ?");
+		System.out.println("C: What is your favourite pet ?");
 		String question =sc.next();
 		refUser.setSecurityQuestion(question);
 		refDAO.validateSecurityQuestion(refUser);
@@ -82,12 +85,12 @@ public class PageDisplay {
 	// Admin Menu Display
 	public void getAdminchoice(User user) {
 		this.refUser = user;
-		Scanner sc = new Scanner(System.in);
 		System.out.println("1. Register New User");
 		System.out.println("2. View User List");
 		System.out.println("3. Logout");
 		
 		String choice = sc.next();
+		System.out.println(" ");
 		switch(choice) {
 		
 		case "1" : 
@@ -95,12 +98,11 @@ public class PageDisplay {
 			break;
 		
 		case "2" :
+			System.out.println("DataBase List");
+			System.out.println(" ");
 			refDAO.showUserDetails(refUser);
-			System.out.println("Enter serial no. to Unlock account");
-			int unlock=sc.nextInt();
-			refUser.setSerialno(unlock);
-			refDAO.selectUserUnLockStatus(refUser);
-			getAdminchoice(refUser);
+			System.out.println(" ");
+			getViewUserListChoice(refUser);
 			break;
 			
 		case "3" :
@@ -109,6 +111,32 @@ public class PageDisplay {
 			break;
 		}
 	} // End of Admin Display
+	
+	// View User List Choice Display
+	public void getViewUserListChoice(User user) {
+		this.refUser = user;
+		System.out.println("Enter Available Options below");
+		System.out.println("1. Unlock Account");
+		System.out.println("2. Back");
+		
+		int choice = sc.nextInt();
+		switch (choice) { 
+		case(1):
+			System.out.println("Enter serial no. to Unlock account");
+			int unlock=sc.nextInt();
+			refUser.setSerialno(unlock);
+			refDAO.selectUserUnLockStatus(refUser);
+			getAdminchoice(refUser);
+			break;
+		case(2):
+			getAdminchoice(refUser);
+			break;
+		default:
+			System.out.println("Invalid choice! Kindly Re-Enter choice");
+			getViewUserListChoice(refUser);
+			break;
+		}
+	}// End of Display
 	
 	
 	// Registration Page
@@ -168,14 +196,17 @@ public class PageDisplay {
 		switch (questionchoice) {
 		
 		case "A" : 
+		case "a" :
 				refUser.setSecurityQuestion(questionchoice);
 				refValidate.validateanswer(refUser);
 				break;
 		case "B" :
+		case "b" :
 				refUser.setSecurityQuestion(questionchoice);
 				refValidate.validateanswer(refUser);
 				break;
 		case "C" :
+		case "c" :
 				refUser.setSecurityQuestion(questionchoice);
 				refValidate.validateanswer(refUser);
 				break;

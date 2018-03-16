@@ -1,7 +1,7 @@
 package model;
 
 public class User {
-	// POJO 
+	
 	private String UserPassword;
 	private String name;
 	private String NRIC;
@@ -14,8 +14,6 @@ public class User {
 	private int serialno;
 	
 	public User(String refPassword,String refName, String refNric, String refEmail, String refDob, String refMobile, String refSQn, String refSAn,int refAttempts){
-		
-		// variables need to insert into DATABASE
 		this.UserPassword = refPassword;
 		this.name = refName;
 		this.NRIC = refNric;

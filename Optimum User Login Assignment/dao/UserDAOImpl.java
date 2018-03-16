@@ -37,7 +37,11 @@ public class UserDAOImpl {
 	        ResultSet rs = preparedStatement.executeQuery();
 	        if(rs.next()) {
 	        	refDisplay.getPasswordPage1(refUser);
+	        	
 	        	}
+	        
+	        	
+	        		
 	        else {
 	        	System.out.println("Invalid Login ID! Kindly Re-Enter Login ID. Thank you");
 	        	refDisplay.getLoginPage1(refUser);
@@ -57,14 +61,9 @@ public class UserDAOImpl {
 				PreparedStatement preparedStatement = conn.prepareStatement(query);
 				preparedStatement.setString(1,refUser.getEmail());
 		        ResultSet rs = preparedStatement.executeQuery();
-		        System.out.println("Checker:"+ ""+ refUser.getEmail());
 		        if(rs.next()) {
 		        	refDisplay.enterSecurityQuestion(refUser);
-		        	
 		        	}
-		       
-		        	
-		        		
 		        else {
 		        	System.out.println("Invalid Login ID! Kindly Re-Enter Login ID. Thank you");
 		        	refDisplay.getLoginPage1(refUser);
@@ -135,9 +134,10 @@ public class UserDAOImpl {
 				String role = rs.getString("Role");
 				String status = rs.getString("Status");
 				boolean firstlogin = rs.getBoolean("FirstLogin");
+				int serialno = rs.getInt("SerialNo");
 				
 				//condition for Login of Admin| Assumption: Admin will never forget his password
-				if(role.equalsIgnoreCase("Admin")&& checker==true) {
+				if(role.equalsIgnoreCase("admin")&& checker==true && serialno==1) {
 					
 					System.out.println("Welcome Admin!"+" "+refUser.getName());
 					refDisplay.getAdminchoice(refUser);
@@ -150,12 +150,13 @@ public class UserDAOImpl {
 				// condition for Login of User for Second Login 
 				else if(status.equalsIgnoreCase("unlock")&& checker==true) {
 					System.out.println("Welcome"+" "+ refUser.getName());
+					resetUpdateAttempts(refUser);
 					refDisplay.logoutdisplay();
 				}			
 				// condition for Login of User when Account is Locked
 				else {
 					System.out.println("Account Locked. Please Contact your Adminstrator to unlock your account");
-					refDisplay.getLoginPage1(refUser);
+					//refDisplay.getLoginPage1(refUser);
 				}
 			}
 			// condition of Wrong attempts of password for User
@@ -177,6 +178,7 @@ public class UserDAOImpl {
 		}
 	} // End of Validate Password Login
 	
+	
 	// Set Update Attempts when password wrong
 	public void setUpdateAttempts(User user) {
 		this.refUser = user;
@@ -196,6 +198,22 @@ public class UserDAOImpl {
 	}
 	// End of Update Attempts
 	
+	// Set Reset Attempts when password 
+		public void resetUpdateAttempts(User user) {
+			this.refUser = user;
+			try {
+				String query="UPDATE FieldsOfDatabase set NoofAttempts = ? where EmailAddress = \'"+refUser.getEmail()+"\'";
+				PreparedStatement preparedStatement = conn.prepareStatement(query);	
+				preparedStatement.setInt(1, 0);
+				preparedStatement.executeUpdate();	
+				preparedStatement.close();
+				
+			}catch (Exception e) {
+			e.printStackTrace();
+			}
+		}
+		// End of Update Attempts
+	
 	// Set Lock Status when password attempts wrong for 3 times
 	public void setLockStatus (User user) {
 		this.refUser = user;
@@ -214,6 +232,7 @@ public class UserDAOImpl {
 		}
 	} // End of Set Lock Status
 	
+	
 	// Option for user to unlock Locked accounts for user ( reset status to lock and attempts to 0)
 	public void selectUserUnLockStatus (User user) {
 		this.refUser = user;
@@ -230,6 +249,7 @@ public class UserDAOImpl {
 		e.printStackTrace();
 		}
 	}// End of Option for user to unlock
+	
 	
 	// Insert table for registration by User
 	public void updatetable(User user) {
@@ -285,6 +305,7 @@ public class UserDAOImpl {
 		}
 	} // End of Valdiation for Temp password
 	
+	
 	// Set New Password for First Login
 	public void setNewPassword(User user) {
 		this.refUser = user;
@@ -330,9 +351,14 @@ public class UserDAOImpl {
 			while(rs.next()) {	
 			    String showserialno = rs.getString("SerialNo");
 			    String displayname = rs.getString("Name");
-			    String displaystatus = rs.getString("Status");
-			    System.out.println(showserialno+"\t "+displayname+"\t "+displaystatus);   
+			    String displayNRIC = rs.getString("NRIC");
+			    String displayEmail = rs.getString("EmailAddress");
+			    String displayMobile = rs.getString("Mobile");
+			    String displayStatus = rs.getString("Status");
+			    int displayAttempts = rs.getInt("NoofAttempts");
 			    
+			    System.out.println(showserialno+"\t "+displayname+"\t "+displayNRIC
+			    		+"\t "+displayEmail+"\t "+displayMobile+"\t "+displayStatus+"\t "+displayAttempts);     
 		}
 			
 		}catch (Exception e) {
@@ -382,6 +408,5 @@ public class UserDAOImpl {
 
 	
 	
-
 
 

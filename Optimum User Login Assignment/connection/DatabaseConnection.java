@@ -24,7 +24,7 @@ public class DatabaseConnection {
         String url = "jdbc:mysql://localhost:3306/loginauthentication";
         String driver = "com.mysql.jdbc.Driver";
         String userName = "root";
-        String password = "root";
+        String password = "newpassword";
 
         try {
 	        Class.forName(driver).newInstance();
@@ -49,4 +49,3 @@ public class DatabaseConnection {
 
     }
 }
-// Connection to SQL database
